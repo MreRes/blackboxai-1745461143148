@@ -1,0 +1,106 @@
+{
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc", "closure"]
+  },
+  "source": {
+    "include": ["backend"],
+    "includePattern": ".+\\.js$",
+    "excludePattern": "(node_modules/|docs/|test/)"
+  },
+  "plugins": [
+    "plugins/markdown",
+    "plugins/summarize"
+  ],
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false,
+    "default": {
+      "outputSourceFiles": true,
+      "includeDate": false
+    },
+    "better-docs": {
+      "name": "Financial WhatsApp Bot Assistant Documentation",
+      "title": "Financial WhatsApp Bot Assistant Documentation",
+      "description": "Dokumentasi API dan kode untuk Financial WhatsApp Bot Assistant",
+      "footer": "Financial WhatsApp Bot Assistant Documentation",
+      "copyright": "Copyright © 2023 Financial WhatsApp Bot Assistant",
+      "navLinks": [
+        {
+          "label": "GitHub",
+          "href": "https://github.com/username/financial-whatsapp-bot"
+        },
+        {
+          "label": "README",
+          "href": "https://github.com/username/financial-whatsapp-bot/blob/main/README.md"
+        }
+      ]
+    },
+    "path": "ink-docstrap",
+    "theme": "cerulean",
+    "navType": "vertical",
+    "linenums": true,
+    "dateFormat": "MMMM Do YYYY, h:mm:ss a"
+  },
+  "markdown": {
+    "parser": "gfm",
+    "hardwrap": true,
+    "idInHeadings": true
+  },
+  "opts": {
+    "destination": "./docs/",
+    "encoding": "utf8",
+    "private": true,
+    "recurse": true,
+    "template": "node_modules/better-docs",
+    "tutorials": "tutorials",
+    "readme": "README.md"
+  },
+  "packageJson": "package.json",
+  "styles": {
+    "footer": {
+      "background": "#f2f2f2"
+    }
+  },
+  "docdash": {
+    "static": true,
+    "sort": true,
+    "sectionOrder": [
+      "Classes",
+      "Modules",
+      "Externals",
+      "Events",
+      "Namespaces",
+      "Mixins",
+      "Tutorials",
+      "Interfaces"
+    ],
+    "meta": {
+      "title": "Financial WhatsApp Bot Assistant Documentation",
+      "description": "Dokumentasi API dan kode untuk Financial WhatsApp Bot Assistant",
+      "keyword": "whatsapp, bot, finance, documentation, api"
+    },
+    "search": true,
+    "collapse": true,
+    "wrap": true,
+    "typedefs": true,
+    "navLevel": 4,
+    "private": true,
+    "removeQuotes": "none",
+    "scripts": [],
+    "menu": {
+      "Project Website": {
+        "href": "https://github.com/username/financial-whatsapp-bot",
+        "target": "_blank",
+        "class": "menu-item",
+        "id": "website_link"
+      }
+    },
+    "scopeInOutputPath": false,
+    "nameInOutputPath": false,
+    "versionInOutputPath": false
+  },
+  "typescript": {
+    "moduleRoot": "src"
+  }
+}
