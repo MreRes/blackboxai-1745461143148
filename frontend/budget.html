@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Assistant - Budget</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        .nav-link.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg">
+            <div class="p-4 border-b">
+                <h2 class="text-xl font-bold text-gray-800">Financial Assistant</h2>
+                <p class="text-sm text-gray-600" id="userGreeting"></p>
+            </div>
+            
+            <nav class="mt-4">
+                <a href="dashboard.html" class="nav-link flex items-center px-4 py-3 text-sm text-gray-700">
+                    <i class="fas fa-chart-line w-5"></i>
+                    <span class="ml-3">Dashboard</span>
+                </a>
+                <a href="transactions.html" class="nav-link flex items-center px-4 py-3 text-sm text-gray-700">
+                    <i class="fas fa-exchange-alt w-5"></i>
+                    <span class="ml-3">Transaksi</span>
+                </a>
+                <a href="budget.html" class="nav-link active flex items-center px-4 py-3 text-sm">
+                    <i class="fas fa-wallet w-5"></i>
+                    <span class="ml-3">Budget</span>
+                </a>
+                <a href="reports.html" class="nav-link flex items-center px-4 py-3 text-sm text-gray-700">
+                    <i class="fas fa-file-alt w-5"></i>
+                    <span class="ml-3">Laporan</span>
+                </a>
+            </nav>
+
+            <div class="absolute bottom-0 w-64 border-t">
+                <button id="logoutBtn" class="flex items-center px-4 py-3 text-sm text-red-600 hover:bg-red-50 w-full">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span class="ml-3">Keluar</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Budget Management</h1>
+                    <p class="text-gray-600">Kelola dan pantau budget Anda dengan mudah</p>
+                </div>
+                <button onclick="openBudgetModal()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Tambah Budget
+                </button>
+            </div>
+
+            <!-- Budget Overview Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Total Budget Card -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-blue-500 rounded-full">
+                            <i class="fas fa-wallet text-white"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-gray-500 text-sm">Total Budget</h3>
+                            <p class="text-2xl font-bold text-gray-800" id="totalBudget">Rp 0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Spent Card -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-red-500 rounded-full">
+                            <i class="fas fa-chart-pie text-white"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-gray-500 text-sm">Total Terpakai</h3>
+                            <p class="text-2xl font-bold text-gray-800" id="totalSpent">Rp 0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Remaining Budget Card -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-green-500 rounded-full">
+                            <i class="fas fa-piggy-bank text-white"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-gray-500 text-sm">Sisa Budget</h3>
+                            <p class="text-2xl font-bold text-gray-800" id="remainingBudget">Rp 0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget Categories -->
+            <div class="bg-white rounded-lg shadow mb-8">
+                <div class="p-6 border-b">
+                    <h3 class="text-lg font-semibold">Budget per Kategori</h3>
+                </div>
+                <div class="p-6">
+                    <div id="categoryBudgets" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Category budgets will be inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget Chart -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="p-6 border-b">
+                    <h3 class="text-lg font-semibold">Tren Penggunaan Budget</h3>
+                </div>
+                <div class="p-6">
+                    <canvas id="budgetChart"></canvas>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Budget Modal -->
+    <div id="budgetModal" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-medium" id="modalTitle">Tambah Budget</h3>
+                <button onclick="closeBudgetModal()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="budgetForm" class="space-y-4">
+                <input type="hidden" id="budgetId">
+                
+                <!-- Category -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                    <select id="category" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Pilih Kategori</option>
+                    </select>
+                </div>
+
+                <!-- Amount -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah Budget</label>
+                    <input type="number" id="amount" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Masukkan jumlah budget">
+                </div>
+
+                <!-- Period -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Periode</label>
+                    <select id="period" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                        <option value="daily">Harian</option>
+                        <option value="weekly">Mingguan</option>
+                        <option value="monthly" selected>Bulanan</option>
+                        <option value="yearly">Tahunan</option>
+                    </select>
+                </div>
+
+                <!-- Start Date -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
+                    <input type="date" id="startDate" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <!-- Notifications -->
+                <div>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="notificationsEnabled" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" checked>
+                        <span class="ml-2 text-sm text-gray-600">Aktifkan notifikasi</span>
+                    </label>
+                </div>
+
+                <!-- Notification Threshold -->
+                <div id="thresholdContainer">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Batas Notifikasi (%)</label>
+                    <input type="number" id="notificationThreshold" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="80" min="1" max="100">
+                </div>
+
+                <!-- Notes -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
+                    <textarea id="notes" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" rows="3" maxlength="500"></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeBudgetModal()" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Error Alert -->
+    <div id="errorAlert" class="fixed bottom-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded hidden" role="alert">
+        <span id="errorMessage"></span>
+    </div>
+
+    <!-- Success Alert -->
+    <div id="successAlert" class="fixed bottom-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded hidden" role="alert">
+        <span id="successMessage"></span>
+    </div>
+
+    <script>
+        // Check authentication
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/index.html';
+        }
+
+        // Set user greeting
+        const user = JSON.parse(localStorage.getItem('user'));
+        document.getElementById('userGreeting').textContent = `Selamat datang, ${user.username}`;
+
+        // Format currency
+        const formatCurrency = (amount) => {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR'
+            }).format(amount);
+        };
+
+        // Format date
+        const formatDate = (date) => {
+            return new Intl.DateTimeFormat('id-ID', {
+                dateStyle: 'medium'
+            }).format(new Date(date));
+        };
+
+        // Show alert
+        function showAlert(type, message) {
+            const alert = document.getElementById(`${type}Alert`);
+            const messageElement = document.getElementById(`${type}Message`);
+            messageElement.textContent = message;
+            alert.classList.remove('hidden');
+            setTimeout(() => {
+                alert.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Fetch categories
+        async function fetchCategories() {
+            try {
+                const response = await fetch('/api/transactions/categories', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch categories');
+
+                const categories = await response.json();
+                const categorySelect = document.getElementById('category');
+                
+                categorySelect.innerHTML = '<option value="">Pilih Kategori</option>';
+                categories.forEach(category => {
+                    categorySelect.add(new Option(category, category));
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('error', 'Gagal memuat kategori');
+            }
+        }
+
+        // Fetch budget overview
+        async function fetchBudgetOverview() {
+            try {
+                const response = await fetch('/api/budget/summary/overview', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch budget overview');
+
+                const data = await response.json();
+                updateBudgetOverview(data.data);
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('error', 'Gagal memuat ringkasan budget');
+            }
+        }
+
+        // Update budget overview
+        function updateBudgetOverview(data) {
+            // Update summary cards
+            document.getElementById('totalBudget').textContent = formatCurrency(data.totals.budgeted);
+            document.getElementById('totalSpent').textContent = formatCurrency(data.totals.spent);
+            document.getElementById('remainingBudget').textContent = formatCurrency(data.totals.remaining);
+
+            // Update category budgets
+            const categoryBudgets = document.getElementById('categoryBudgets');
+            categoryBudgets.innerHTML = data.budgets.map(budget => `
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-medium text-gray-700">${budget.category}</h4>
+                        <button onclick="editBudget('${budget._id}')" class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Budget:</span>
+                            <span class="font-medium">${formatCurrency(budget.budgeted)}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Terpakai:</span>
+                            <span class="font-medium ${budget.percentageUsed > 100 ? 'text-red-600' : ''}">${formatCurrency(budget.spent)}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Sisa:</span>
+                            <span class="font-medium ${budget.remaining < 0 ? 'text-red-600' : 'text-green-600'}">${formatCurrency(budget.remaining)}</span>
+                        </div>
+                        <div class="mt-2">
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: ${Math.min(budget.percentageUsed, 100)}%"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>${Math.round(budget.percentageUsed)}% terpakai</span>
+                                <span>${Math.round(100 - budget.percentageUsed)}% tersisa</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update chart
+            const ctx = document.getElementById('budgetChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.budgets.map(b => b.category),
+                    datasets: [
+                        {
+                            label: 'Budget',
+                            data: data.budgets.map(b => b.budgeted),
+                            backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                            borderColor: 'rgb(59, 130, 246)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Terpakai',
+                            data: data.budgets.map(b => b.spent),
+                            backgroundColor: 'rgba(239, 68, 68, 0.5)',
+                            borderColor: 'rgb(239, 68, 68)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Modal functions
+        function openBudgetModal() {
+            document.getElementById('budgetModal').classList.remove('hidden');
+            document.getElementById('budgetId').value = '';
+            document.getElementById('budgetForm').reset();
+            document.getElementById('startDate').valueAsDate = new Date();
+        }
+
+        function closeBudgetModal() {
+            document.getElementById('budgetModal').classList.add('hidden');
+        }
+
+        // Handle form submission
+        document.getElementById('budgetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const budgetId = document.getElementById('budgetId').value;
+            const method = budgetId ? 'PUT' : 'POST';
+            const url = budgetId ? `/api/budget/${budgetId}` : '/api/budget';
+            
+            const formData = {
+                category: document.getElementById('category').value,
+                amount: parseFloat(document.getElementById('amount').value),
+                period: document.getElementById('period').value,
+                startDate: document.getElementById('startDate').value,
+                notifications: {
+                    enabled: document.getElementById('notificationsEnabled').checked,
+                    threshold: parseInt(document.getElementById('notificationThreshold').value)
+                },
+                notes: document.getElementById('notes').value
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) throw new Error('Failed to save budget');
+
+                closeBudgetModal();
+                fetchBudgetOverview();
+                showAlert('success', budgetId ? 'Budget berhasil diperbarui' : 'Budget berhasil ditambahkan');
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('error', 'Gagal menyimpan budget');
+            }
+        });
+
+        // Toggle notification threshold input
+        document.getElementById('notificationsEnabled').addEventListener('change', (e) => {
+            document.getElementById('thresholdContainer').style.display = e.target.checked ? 'block' : 'none';
+        });
+
+        // Handle logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/index.html';
+        });
+
+        // Initial load
+        fetchCategories();
+        fetchBudgetOverview();
+    </script>
+</body>
+</html>
