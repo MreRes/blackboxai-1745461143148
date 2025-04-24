@@ -1,0 +1,54 @@
+{
+  "verbose": true,
+  "watch": [
+    "backend/**/*.js",
+    ".env"
+  ],
+  "ignore": [
+    "node_modules/*",
+    "frontend/*",
+    "docs/*",
+    "coverage/*",
+    "*.test.js",
+    "*.spec.js",
+    "backups/*",
+    "logs/*",
+    "temp/*",
+    "uploads/*",
+    ".git",
+    "README.md",
+    "LICENSE",
+    ".gitignore",
+    "package*.json"
+  ],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "ext": "js,json,env",
+  "exec": "node --trace-warnings backend/server.js",
+  "events": {
+    "start": "cls || clear",
+    "restart": "cls || clear"
+  },
+  "delay": "1000",
+  "restartable": "rs",
+  "colours": true,
+  "notify": true,
+  "legacyWatch": false,
+  "signal": "SIGTERM",
+  "stdout": true,
+  "stderr": true,
+  "execMap": {
+    "js": "node --trace-warnings"
+  },
+  "runOnChangeOnly": false,
+  "exitcrash": true,
+  "dump": false,
+  "logFilter": {
+    "excludePatterns": [
+      "Password:",
+      "Token:",
+      "API Key:"
+    ]
+  }
+}
