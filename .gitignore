@@ -1,0 +1,173 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# WhatsApp files
+whatsapp-bot/session.json
+whatsapp-bot/session/
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Database backups
+backups/
+backup*/
+*.backup
+*.bak
+*.dump
+
+# Logs and debugging
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+debug.log
+.pnpm-debug.log*
+
+# Runtime data and temp files
+backend/temp/
+backend/uploads/
+tmp/
+temp/
+.tmp
+*.tmp
+*.temp
+
+# Test coverage
+coverage/
+.nyc_output/
+junit.xml
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+*.bak
+*.sublime-workspace
+*.sublime-project
+.project
+.settings/
+.classpath
+.factorypath
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Build and distribution
+dist/
+build/
+out/
+*.tgz
+*.tar.gz
+*.zip
+
+# Documentation
+docs/
+doc/
+documentation/
+jsdoc/
+
+# SSL/TLS certificates
+*.pem
+*.key
+*.crt
+*.cer
+*.der
+*.priv
+*.p12
+*.pfx
+
+# Application specific
+qr-codes/
+.qr-code.png
+.tokens/
+.sessions/
+.cache/
+.local/
+
+# Miscellaneous
+.git/
+*.pid
+*.seed
+*.pid.lock
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.vercel
+.netlify
+.next
+.nuxt
+
+# NLP and ML models
+nlp-model.json
+models/
+*.model
+*.bin
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Test files
+__tests__/
+test/
+tests/
+*.test.js
+*.spec.js
+
+# Dependency directories
+jspm_packages/
+bower_components/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# dotenv environment variable files
+.env*.local
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Serverless
+.serverless/
+.dynamodb/
+
+# Local development
+*.local
+local/
+
+# Temporary files
+*.swx
+*~
